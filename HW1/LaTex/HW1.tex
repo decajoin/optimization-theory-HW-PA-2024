@@ -1,0 +1,247 @@
+\documentclass[UTF8]{ctexart}
+\usepackage[top=3cm,bottom=2cm,left=2cm,right=2cm]{geometry} % 页边距
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{quicklatex}
+\usepackage{color}
+\begin{document}
+
+	\title{最优化第一次作业}
+	\author{人工智能 222 杨义琦}
+	\date{\today}
+	\maketitle
+
+
+	{\bf 注意:}
+	\begin{itemize}
+		\item 作业请用A4纸手写或者电脑输入然后打印，本次作业提交时间为10月25日，请各班学习委员收齐后交给我。
+		\item 该作业通过latex生成，如果你需要latex源码并在上面直接写作业，请私下联系我。
+		\item 作业内容就是期末考试题库内容，请大家认真独立完成。
+	\end{itemize}
+
+	\begin{enumerate}
+		\item 计算下面向量或矩阵变量函数的导数(请写出过程)
+		\begin{itemize}
+			\item $f(x)=\frac{1}{2}\|Ax-b\|_2^2$,$A\in\mathbf{R}^{m\times n},x\in\mathbf{R}^n,y\in\mathbf{R}^m$.
+
+			题解：
+
+			首先展开平方范数：
+			\begin{align*}
+				f(x) &= \frac{1}{2}\|Ax-b\|_2^2 \\
+				&= \frac{1}{2}(Ax-b)^T(Ax-b) \\
+				&= \frac{1}{2}(x^TA^TAx - x^TA^Tb - b^TAx + b^Tb)
+			\end{align*}
+
+			对x求导：
+
+			二次型 $x^TBx$ （其中 B 是对称矩阵）的导数是 $2Bx$
+
+			在本题中，$A^TA$ 是一个对称矩阵（因为 $(A^TA)^T = A^TA$）
+
+			所以 $x^TA^TAx$ 是一个二次型
+
+			因此 $\frac {\partial}{\partial x}(x^TA^TAx) = 2A^TAx$
+
+			\begin{align*}
+				\frac{\partial f}{\partial x} &= \frac{1}{2}(2A^TAx - A^Tb - A^Tb) \\
+				&= A^TAx - A^Tb
+			\end{align*}
+
+			因此，$\nabla f(x) = A^TAx - A^Tb$
+
+			\item $f(X)=a^TXb$,其中$X\in\mathbf{R}^{m\times n},a\in\mathbf{R}^{m},b\in\mathbf{R}^{n}$为给定的向量。
+
+			题解：
+
+			这是一个标量函数，可以使用矩阵微分的基本性质。
+
+			由矩阵微分的基本结果$\frac {\partial}{\partial X}Tr(AXB) = A^TB^T$可知
+
+			对矩阵$X$求导：
+
+			\begin{align*}
+				\frac{\partial f}{\partial X} = ab^T
+			\end{align*}
+
+			\item $f(X)=Tr(X^TAX)$,其中$X\in\mathbf{R}^{m\times n}$为长方形矩阵,$A$为方阵（但不一定对称）
+
+			题解：
+
+			矩阵微分的基本性质：
+			\begin{enumerate}
+				\item $Tr(AB) = Tr(BA) \quad \text{迹的循环性质}$
+				\item $\frac{\partial Tr(AX)}{\partial X} = A^T \quad \text{迹对矩阵的导数}$
+				\item $\frac{\partial Tr(XA)}{\partial X} = A \quad \text{迹对矩阵的导数}$
+			\end{enumerate}
+
+			考虑函数在方向$H$上的增量：
+			\begin{align*}
+				f(X + tH) &= Tr((X + tH)^TA(X + tH)) \\
+				&= Tr((X^T + tH^T)A(X + tH)) \\
+				&= Tr(X^TAX + tX^TAH + tH^TAX + t^2H^TAH)
+			\end{align*}
+
+			根据导数定义，我们只需要$t$的一次项：
+			\begin{align*}
+				\left.\frac{d}{dt}f(X + tH)\right|_{t=0} = Tr(X^TAH + H^TAX) = Tr(X^TAH) + Tr(H^TAX)
+			\end{align*}
+
+			使用迹的循环性质：
+			\begin{align*}
+				&= Tr(X^TAH) + Tr(H^TAX) \\
+				&= Tr(H^TA^TX) + Tr(H^TAX) \quad (\text{迹的性质：}Tr(A) = Tr(A^T)) \\
+				&= Tr(H^T(AX + A^TX))
+			\end{align*}
+
+			根据内积的定义$\left\langle A,B\right\rangle = Tr(A^TB)$可得：
+			\begin{align*}
+				\left\langle \frac{\partial f}{\partial X}, H \right\rangle = Tr(H^T\frac{\partial f}{\partial X})
+			\end{align*}
+
+			因此：
+			\begin{align*}
+				\frac{\partial f}{\partial X}=\frac{\partial Tr(X^TAX)}{\partial X} = AX + A^TX
+			\end{align*}
+
+
+		\end{itemize}
+
+
+		\item 求优化目标函数$J$关于变量$F$和$G$的{\bf 梯度}和{\bf 二阶导数(海塞矩阵)}
+		$$
+		J(F,G)=-\sum\limits_{i,j=1}^n(s_{ij}\theta_{ij}-\log(1+\exp(\theta_{ij}))
+		$$
+		其中 $F=[f_1,f_2,\cdots,f_n]\in\mathbf{R}^{c\times n}$,     $G=[g_1,g_2,\cdots,g_n]\in\mathbf{R}^{c\times n}$, $\theta_{ij}=\frac{1}{2}f_i^Tg_j$,$s_{ij}$为常量
+
+		题解：
+
+		$\bullet$ 一阶梯度：
+
+		对于$F$的第$k$个元素$f_k$，令 $p_{ij}=\frac {\exp (\theta_{ij})}{1+\exp (\theta_{ij})}$，一阶偏导数为：
+		\begin{align*}
+			\frac{\partial J}{\partial f_k}=\sum_{j=1}^n\frac{\partial J}{\partial\theta_{kj}}\frac{\partial\theta_{kj}}{\partial f_k}
+		\end{align*}
+		其中
+		\begin{align*}
+			\frac{\partial J}{\partial\theta_{kj}}=-(s_{kj}-\frac{\exp(\theta_{kj})}{1+\exp(\theta_{kj})}) \quad\quad \frac{\partial\theta_{ij}}{\partial f_k}=\begin{cases}\frac{1}{2}g_j&\text{if } i=k\\0&\text{otherwise}\end{cases}
+		\end{align*}
+		所以我们有
+		\begin{align*}
+			\frac{\partial J}{\partial f_k}=-\sum\limits_{j=1}^n\left(s_{kj}-\frac{\exp(\theta_{kj})}{1+\exp(\theta_{kj})}\right) \cdot \frac{1}{2}g_j = -\frac{1}{2}\sum\limits_{j=1}^n\left(s_{kj}-p_{kj}\right)g_j
+		\end{align*}
+		同理，对于$G$的第$l$个元素$g_l$,一阶偏导数为：
+		\begin{align*}
+			\frac{\partial J}{\partial g_l}=-\sum\limits_{i=1}^n\left(s_{il}-\frac{\exp(\theta_{il})}{1+\exp(\theta_{il})}\right) \cdot \frac{1}{2}f_i = -\frac{1}{2}\sum\limits_{i=1}^n\left(s_{il}-p_{il}\right)f_i
+		\end{align*}
+		$\bullet$ 二阶梯度：
+
+		通过求导可以发现：
+		\begin{align*}
+			\frac {\partial p_{ij}}{\partial \theta_{ij}}=p_{ij}(1-p_{ij})
+		\end{align*}
+		对于 $f_i$ 的二阶导数：
+		\begin{align*}
+				\frac {\partial^2 J}{\partial f_i\partial f_i^T} = -\frac {1}{4}\sum_{j=1}^n p_{ij}(1-p_{ij}) g_jg_j^T
+		\end{align*}
+		对于 $g_j$ 的二阶导数：
+		\begin{align*}
+			\frac {\partial^2 J}{\partial g_j\partial g_j^T} = -\frac {1}{4}\sum_{i=1}^n p_{ij}(1-p_{ij}) f_if_i^T
+		\end{align*}
+		对于交叉二阶导数：
+		\begin{align*}
+			\frac {\partial^2 J}{\partial f_i\partial g_j} = -\frac {1}{4} p_{ij}(1-p_{ij}) g_j \\
+			\frac {\partial^2 J}{\partial g_j\partial f_i} = -\frac {1}{4} p_{ij}(1-p_{ij}) f_i
+		\end{align*}
+		完整的海塞矩阵：
+		\begin{align*}
+			H = \begin {bmatrix}
+			\frac {\partial^2 j}{\partial f\partial f^t} & \frac {\partial^2 j}{\partial f\partial g^t} \
+			\frac {\partial^2 j}{\partial g\partial f^t} & \frac {\partial^2 j}{\partial g\partial g^t}
+			\end {bmatrix}
+		\end{align*}
+
+
+
+
+
+		\item 试证明球及椭球为凸集。（请查看教材P38的球和椭球的定义）
+
+		定义：
+		\begin{enumerate}
+			\item 球：$B (x_c,r)=\{x|\left\|x-x_c\right\|_2\leq r\}=\{x_c+ru|\left\|u\right\|_2\leq1\}$
+
+			\item 椭球：$\{x|(x-x_c)^TP^{-1}(x-x_c)\leq1\}$
+		\end{enumerate}
+
+		$\bullet$ 证明球是凸集：
+
+		要证明集合 $B(x_c,r)$ 是凸集，需要证明对任意 $x_1,x_2 \in B(x_c,r)$ 和任意 $\theta \in [0,1]$，都有：
+		$\theta x_1 + (1-\theta)x_2 \in B(x_c,r)$
+
+		假设 \(x_1, x_2 \in B(x_c, r)\)，即:
+		\begin{align*}
+			\|x_1 - x_c\|_2 \leq r \quad \text{和} \quad \|x_2 - x_c\|_2 \leq r.
+		\end{align*}
+
+		我们需要证明对于任意 \(\lambda \in [0, 1]\)，点 \(x_\lambda = \lambda x_1 + (1 - \lambda) x_2\) 也在球内，即 \(x_\lambda \in B(x_c, r)\)，满足:
+		\begin{align*}
+			\|x_\lambda - x_c\|_2 \leq r.
+		\end{align*}
+		首先，我们展开 \(x_\lambda - x_c\):
+		\begin{align*}
+			x_\lambda - x_c = \lambda x_1 + (1 - \lambda) x_2 - x_c = \lambda (x_1 - x_c) + (1 - \lambda) (x_2 - x_c).
+		\end{align*}
+		然后使用三角不等式:
+		\begin{align*}
+		\|x_\lambda - x_c\|_2 = \| \lambda(x_1 - x_c) + (1 - \lambda)(x_2 - x_c)\|_2 \leq \lambda \|x_1 - x_c\|_2 + (1 - \lambda) \|x_2 - x_c\|_2.
+		\end{align*}
+		由于 \(\|x_1 - x_c\|_2 \leq r\) 和 \(\|x_2 - x_c\|_2 \leq r\)，因此:
+		\begin{align*}
+			\|x_\lambda - x_c\|_2 \leq \lambda r + (1 - \lambda) r = r.
+		\end{align*}
+		因此，\(\|x_\lambda - x_c\|_2 \leq r\)，说明 \(x_\lambda \in B(x_c, r)\)，即球是凸集，证毕。
+
+		$\bullet$ 证明椭球是凸集：
+
+		假设 \(x_1, x_2 \in E\)，即:
+		\begin{align*}
+			(x_1 - x_c)^T P^{-1} (x_1 - x_c) \leq 1 \quad \text{和} \quad (x_2 - x_c)^T P^{-1} (x_2 - x_c) \leq 1.
+		\end{align*}
+		我们需要证明对于任意 \(\lambda \in [0, 1]\)，点 \(x_\lambda = \lambda x_1 + (1 - \lambda) x_2\) 也在椭球内，即:
+		\begin{align*}
+			(x_\lambda - x_c)^T P^{-1} (x_\lambda - x_c) \leq 1
+		\end{align*}
+		首先，\(x_\lambda - x_c\)可以展开为：
+		\begin{align*}
+			x_\lambda - x_c = \lambda x_1+(1-\lambda) x_2-x_c = \lambda (x_1 - x_c) + (1 - \lambda) (x_2 - x_c)
+		\end{align*}
+		所以，我们可以得到：
+		\begin{align*}
+			[\lambda(x_1 - x_c) + (1 - \lambda)(x_2 - x_c)]^T P^{-1} [\lambda(x_1 - x_c) + (1 - \lambda)(x_2 - x_c)]
+		\end{align*}
+		继续展开得到：
+		\begin{align*}
+			\lambda^2(x_1 - x_c)^T P^{-1}(x_1 - x_c) + 2\lambda (1 - \lambda) (x_1 - x_c)^T P^{-1}(x_2 - x_c) + (1 - \lambda)^2 (x_2 - x_c)^T P^{-1}(x_2 - x_c)
+		\end{align*}
+		由柯西 - 施瓦茨不等式和椭球的定义可知：
+		\begin{align*}
+			(x_1 - x_c)^T P^{-1} (x_2 - x_c) \leq \sqrt{(x_1 - x_c)^T P^{-1} (x_1 - x_c)} \cdot \sqrt{(x_2 - x_c)^T P^{-1} (x_2 - x_c)} \leq \sqrt{1} \cdot \sqrt{1} \leq 1
+		\end{align*}
+		所以，对之前的展开式进行放缩：
+		\begin{align*}
+			\text{before} \leq \lambda^2(x_1 - x_c)^T P^{-1}(x_1 - x_c) + 2\lambda(1 - \lambda) \cdot 1 + (1 - \lambda)^2(x_2 - x_c)^T P^{-1}(x_2 - x_c)
+		\end{align*}
+		根据椭球的定义放缩可得：
+		\begin{align*}
+			\text{before} \leq \lambda^2 \cdot 1 + 2\lambda (1 - \lambda) \cdot 1 + (1 - \lambda)^2 \cdot 1 = (\lambda + (1 - \lambda))^2 = 1
+		\end{align*}
+		因此，\((x_\lambda - x_c) T P^{-1} (x_\lambda - x_c) \leq 1\)，说明\(x_\lambda\)也属于椭球\(E\)，即椭球是一个凸集，证毕。
+
+
+
+
+
+
+	\end{enumerate}
+
+\end{document}
